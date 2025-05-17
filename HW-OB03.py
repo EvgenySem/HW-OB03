@@ -3,6 +3,7 @@
 # и методы (`make_sound()`, `eat()`) для всех животных.
 from fcntl import FASYNC
 
+import jsonpickle
 
 class Animal:
     def __init__(self, kind, name, age, health_status, sound):
@@ -118,50 +119,90 @@ class Veterinarian(Worker):
 
 
 #------------------------------------------------------------
-birds = [Bird("Sparrow","Jack", 2, "Good", "Чирик","20 sm"),
-         Bird("Chicken","Coco", 1, "Good", "Ко-ко-ко", "15 sm"),
-         Bird("Hawk","Birdie", 3, "Healing", "Иииии", "20 sm")]
+# ДОПОЛНИТЕЛЬНОЕ ЗАДАНИЕ
+# Save to file
+def save_zoo(zoo):
+    encoded_ex = jsonpickle.encode(zoo)
+    print(encoded_ex)
+    with open("saved_zoo", "w") as f:
+        f.write(encoded_ex)
 
-mammals = [Mammal("Tiger", "Diego", 3, "Good", "Рррррр", "carnivores"),
-           Mammal("Panther", "Blacky", 3, "Good", "Рррраааауу", "carnivores"),
-           Mammal("Deer", "John", 4, "Goood", "Иу-иии-и-и", "herbivores")]
+    return print(f'Данные зоопарка {zoo.name} были сохранены в файл')
 
-reptiles = [Reptile("Lizard", "Blizzard", 1, "Good", "Ххх", False),
-            Reptile("Cobra", "Marry", 2, "Good", "Ссссссс", True),
-            Reptile("Crocodile", "Bombardile", 3, "Good", "Аррр", False)]
+# Download from file
+def download_zoo():
+    with open("saved_zoo", "r+") as f:
+        written_instance = f.read()
+        decoded_ex = jsonpickle.decode(written_instance)
+        print(f'Данные зоопарка {decoded_ex.name} успешно загружены')
+    return decoded_ex
 
-employes = [ZooKeeper("1","Ivan Ivanov", "Смотритель"),
-            ZooKeeper("2","Vasily Vasilyev", "Смотритель"),
-            Veterinarian("3","Anna Healer", "Главный Врач")]
 
-zoo_Central = Zoo("Central", "New York")
+# Загрузка объекта Зоопарка из файла
+zoo_Central = download_zoo()
+
+# Запуск функции звучания для всех животных в зоопарке
+animal_sound(zoo_Central.animals)
+
+# Запуск методов работников из объекта зоопарка
+zoo_Central.zoo_workers[0].feed_animal(zoo_Central.animals[3])
+
+print(zoo_Central.animals[2].health_status)
+zoo_Central.zoo_workers[2].heal_animal(zoo_Central.animals[2], "Healing in progress") # "Good" or "Healing in progress" (to test)
+print(zoo_Central.animals[2].health_status)
 
 #------------------------------------------------------------
-animal_sound(birds, mammals, reptiles)
-print('')
+# ПЕРВЫЙ ЗАПУСК ПРОГРАММЫ (Без файла с сохраненным состоянием)
+# Первое создание экземпляров каждого класса
+#
+# birds = [Bird("Sparrow","Jack", 2, "Good", "Чирик","20 sm"),
+#          Bird("Chicken","Coco", 1, "Good", "Ко-ко-ко", "15 sm"),
+#          Bird("Hawk","Birdie", 3, "Healing", "Иииии", "20 sm")]
+#
+# mammals = [Mammal("Tiger", "Diego", 3, "Good", "Рррррр", "carnivores"),
+#            Mammal("Panther", "Blacky", 3, "Good", "Рррраааауу", "carnivores"),
+#            Mammal("Deer", "John", 4, "Goood", "Иу-иии-и-и", "herbivores")]
+#
+# reptiles = [Reptile("Lizard", "Blizzard", 1, "Good", "Ххх", False),
+#             Reptile("Cobra", "Marry", 2, "Good", "Ссссссс", True),
+#             Reptile("Crocodile", "Bombardile", 3, "Good", "Аррр", False)]
+#
+# employes = [ZooKeeper("1","Ivan Ivanov", "Смотритель"),
+#             ZooKeeper("2","Vasily Vasilyev", "Смотритель"),
+#             Veterinarian("3","Anna Healer", "Главный Врач")]
+#
+# zoo_Central = Zoo("Central", "New York")
+#
+# #------------------------------------------------------------
+# # Запуск функции звучания для списка животных (при первом создании)
+# animal_sound(birds, mammals, reptiles)
+# print('')
+#
+# #------------------------------------------------------------
+# # Первое добавление всех экземпляров класса в зоопарк
+# for animal in birds:
+#     zoo_Central.add_animal(animal)
+#
+# for animal in mammals:
+#     zoo_Central.add_animal(animal)
+#
+# for animal in reptiles:
+#     zoo_Central.add_animal(animal)
+#
+# for worker in employes:
+#     zoo_Central.add_worker(worker)
+# print('')
+#
+# #------------------------------------------------------------
+# # Запуск методов работников зоопарка их списка работников (при первом создании)
+# employes[0].feed_animal(mammals[1])
+# employes[1].feed_animal(reptiles[0])
+#
+# print(birds[2].health_status)
+# employes[2].heal_animal(birds[2], "Good")
+# print(birds[2].health_status)
+#
 #------------------------------------------------------------
-
-for animal in birds:
-    zoo_Central.add_animal(animal)
-
-for animal in mammals:
-    zoo_Central.add_animal(animal)
-
-for animal in reptiles:
-    zoo_Central.add_animal(animal)
-
-for worker in employes:
-    zoo_Central.add_worker(worker)
-print('')
-#------------------------------------------------------------
-
-employes[0].feed_animal(mammals[1])
-employes[1].feed_animal(reptiles[0])
-
-print(birds[2].health_status)
-employes[2].heal_animal(birds[2], "Good")
-print(birds[2].health_status)
-
-
-
+# Сохранение состояния экземпляра зоопарка
+save_zoo(zoo_Central)
 
