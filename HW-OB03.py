@@ -1,7 +1,7 @@
 # 1. Создайте базовый класс `Animal`,
 # который будет содержать общие атрибуты (например, `name`, `age`)
 # и методы (`make_sound()`, `eat()`) для всех животных.
-from fcntl import FASYNC
+
 
 import jsonpickle
 
